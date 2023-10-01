@@ -1,0 +1,6 @@
+.vscode/
+*.cbp
+*.depend
+*.layout
+*/bin
+*/obj
