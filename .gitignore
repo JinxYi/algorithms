@@ -4,4 +4,4 @@
 *.layout
 */bin
 */obj
-.exe
+*.exe
