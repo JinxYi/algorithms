@@ -16,25 +16,22 @@ typedef struct _linkedlist {
 } LinkedList;
 
 int insertNode(LinkedList *ll, int index, int coin);
-int removeNode(LinkedList *ll, int index);
 ListNode *findNode(LinkedList ll, int index);
 void removeAllItems(LinkedList *ll);
 
 void mergeSort(LinkedList *ll);
+void split(LinkedList *ll, LinkedList *left, LinkedList *right);
 void merge(LinkedList *ll, LinkedList *left, LinkedList *right);
 void printList(LinkedList *ll);
 
 int main()
 {
-    int listSize = 60;
+    int listSize = 20;
     int x = 100;
-    
-    srand(time(NULL)); //random num generator
 
     LinkedList ll;
     ll.size = 0;
     ll.head = NULL;
-
     for (int i = 0; i < listSize; i++) {
         insertNode(&ll, i, rand() % (x+1));
     }
@@ -49,25 +46,10 @@ int main()
 
 void mergeSort(LinkedList *ll)
 {
-    if (ll->size <= 1) {
-        return; // Nothing to sort
-    }
-
-    int mid = ll->size / 2;
-
+    if (ll->size <= 1) return; // Nothing to sort
+    
     LinkedList left, right;
-    left.size = mid;
-    right.size = ll->size - mid;
-    left.head = ll->head;
-    ListNode *current = ll->head;
-
-    // Split the linked list into two halves
-    for (int i = 0; i < mid - 1; i++) {
-        current = current->next;
-    }
-
-    right.head = current->next;
-    current->next = NULL;
+    split(ll, &left, &right);
 
     // Recursively sort both halves
     mergeSort(&left);
@@ -75,6 +57,23 @@ void mergeSort(LinkedList *ll)
 
     // Merge the sorted halves
     merge(ll, &left, &right);
+}
+
+void split(LinkedList *ll, LinkedList *left, LinkedList *right) {
+    int mid = ll->size / 2;
+
+    left->size = mid;
+    right->size = ll->size - mid;
+    left->head = ll->head;
+    ListNode *current = ll->head;
+
+    // Split the linked list into two halves
+    for (int i = 0; i < mid - 1; i++) {
+        current = current->next;
+    }
+
+    right->head = current->next;
+    current->next = NULL;
 }
 
 void merge(LinkedList *ll, LinkedList *left, LinkedList *right)
@@ -106,10 +105,10 @@ void merge(LinkedList *ll, LinkedList *left, LinkedList *right)
         }
     }
 
+    // copy remaining elements
     if (leftPtr != NULL) {
         current->next = leftPtr;
     }
-
     if (rightPtr != NULL) {
         current->next = rightPtr;
     }
@@ -120,13 +119,11 @@ void merge(LinkedList *ll, LinkedList *left, LinkedList *right)
 
 // LinkedList methods
 int insertNode(LinkedList *ll, int index, int value){
+	if (ll == NULL || index < 0 || index > ll->size) return 0;
 
 	ListNode *pre, *cur;
 
-	if (ll == NULL || index < 0 || index > ll->size)
-		return 0;
-
-        if (index == 0){
+    if (index == 0) {
 		cur = ll->head;
 		ll->head = (ListNode*) malloc(sizeof(ListNode));
 		ll->head->item = value;
@@ -134,7 +131,6 @@ int insertNode(LinkedList *ll, int index, int value){
 		ll->size++;
 		return 1;
 	}
-
 
 	// Find the nodes before and at the target position
 	// Create a new node and reconnect the links
@@ -144,41 +140,6 @@ int insertNode(LinkedList *ll, int index, int value){
 		pre->next->item = value;
 		pre->next->next = cur;
 		ll->size++;
-		return 1;
-	}
-
-	return 0;
-}
-
-
-int removeNode(LinkedList *ll, int index){
-
-	ListNode *pre, *cur;
-
-	// Highest index we can remove is size-1
-	if (ll == NULL || index < 0 || index > ll->size)
-		return 0;
-
-	// If removing first node, need to update head pointer
-	if (index == 0){
-		cur = ll->head->next;
-		free(ll->head);
-		ll->head = cur;
-		ll->size--;
-		return 1;
-	}
-
-	// Find the nodes before and after the target position
-	// Free the target node and reconnect the links
-	if ((pre = findNode(*ll, index - 1)) != NULL){
-
-		if (pre->next == NULL)
-			return 0;
-
-		cur = pre->next;
-		pre->next = cur->next;
-		free(cur);
-		ll->size--;
 		return 1;
 	}
 
