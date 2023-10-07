@@ -7,12 +7,23 @@ void heapSort(int *arr, int n);
 int main() {
     int arr[] = { 12, 11, 13, 5, 6, 7 };
     int N = sizeof(arr) / sizeof(arr[0]);
- 
     // Function call
     heapSort(arr, N);
     printf("Sorted array is\n");
     printArray(arr, N);
     return 0;
+}
+
+void heapSort(int *arr, int n) {
+    int i;
+    for(i=n/2-1; i>=0; i--) { // make the maxifying tree 
+        heapify(arr, n, i);
+    }
+    
+    for(i=n-1; i>=0; i--) {
+        swap(&arr[0], &arr[i]); // placing largest el to the pos of the rightmost leaf node
+        heapify(arr, i, 0); // heapify the array to get root again
+    }
 }
 
 void heapify(int *arr, int n, int p) {
@@ -31,20 +42,6 @@ void heapify(int *arr, int n, int p) {
         heapify(arr, n, largest);
     }
 }
-
-void heapSort(int *arr, int n) {
-    int i;
-    for(i=n/2-1; i>=0; i--) {
-        heapify(arr, n, i);
-    }
-    
-    for(i=n; i>=0; i--) {
-        swap(&arr[0], &arr[i]);
-        heapify(arr, i, 0); // heapify the array to get root again
-    }
-}
-
-
 
 void swap(int* a, int* b)
 {
