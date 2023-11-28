@@ -1,4 +1,6 @@
 #include <stdio.h>
+#include <stdlib.h>
+#include <time.h>
 
 void quickSort(int array[], int low, int high);
 int partition(int array[], int low, int high);
@@ -6,34 +8,40 @@ void swap(int *a, int *b);
 void printArray(int array[], int size);
 
 int main() {
-    int data[] = {8, 7, 2, 1, 0, 9, 6};
+    int n, x;
+    printf("Enter an array size: ");
+    scanf("%d", &n);
+    printf("Enter max value of record: ");
+    scanf("%d", &x);
 
-    int n = sizeof(data) / sizeof(data[0]);
+    srand(time(NULL));
+    int *data = (int *) malloc(n * sizeof(int));
+    for (int i = 0; i < n; i++)
+    {
+        data[i] = rand() % (x + 1); // generate 0 to x
+    }
 
-    printf("Unsorted Array\n");
+    printf("Unsorted Array: \n");
     printArray(data, n);
 
-    // perform quicksort on data
     quickSort(data, 0, n - 1);
 
-    printf("Sorted array in ascending order: \n");
+    printf("Sorted array: \n");
     printArray(data, n);
 }
 
 void quickSort(int array[], int low, int high) {
-    if (low < high) {
+    if(low>=high) return;
+    // find the pivot element such that
+    // elements smaller than pivot are on left of pivot
+    // elements greater than pivot are on right of pivot
+    int pivot = partition(array, low, high);
 
-        // find the pivot element such that
-        // elements smaller than pivot are on left of pivot
-        // elements greater than pivot are on right of pivot
-        int pi = partition(array, low, high);
+    // recursive call on the left of pivot
+    quickSort(array, low, pivot - 1);
 
-        // recursive call on the left of pivot
-        quickSort(array, low, pi - 1);
-
-        // recursive call on the right of pivot
-        quickSort(array, pi + 1, high);
-    }
+    // recursive call on the right of pivot
+    quickSort(array, pivot + 1, high);
 }
 
 // partition orders the array such that every element to the left of the pivot
@@ -49,10 +57,10 @@ int partition(int array[], int low, int high) {
 
     last_small = low; // pointer index containing the tail element of left subarray
 
-    // traverse each element of the array
+    // traverse each element of the array (excluding pivot)
     // compare them with the pivot
     for (i = low + 1; i <= high; i++) {
-        if (array[i] <= pivot) {
+        if (array[i] < pivot) {
             last_small++;
             swap(&array[last_small], &array[i]);
         }

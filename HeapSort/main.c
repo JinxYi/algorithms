@@ -17,7 +17,7 @@ int main() {
 void heapSort(int *arr, int n) {
     int i;
     for(i=n/2-1; i>=0; i--) { // make the maxifying tree 
-        heapify(arr, n, i);
+        heapify(arr, n, i); // initally the size of the heap is n
     }
     
     for(i=n-1; i>=0; i--) {
@@ -27,9 +27,13 @@ void heapSort(int *arr, int n) {
 }
 
 void heapify(int *arr, int n, int p) {
+    // if the node at index p is a leaf, this code is not run
     int largest = p;
     int left = 2*p+1;
     int right = 2*p+2;
+    // checking left child and right child is less than n
+    // makes sure that the targets exist
+    
     // If left child is larger than root
     if (left < n && arr[left] > arr[largest])
         largest = left;
